@@ -1,0 +1,108 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+    <script src="{% static 'blog/js/like.js' %}"></script>
+    {% for post in posts%}
+        <article class="media content-section">
+            <img  class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted | date:"l , d F Y" }}</small>
+                    <small class="time-post">{{ post.date_posted | date:"G:i" }}</small>
+                </div>
+                <h2>
+                    <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                    
+                    <!--Like-->
+                    {% if user != post.author %}
+                    <a class="likebtn btn float-right" pk="{{post.id}}" style="background-color: transparent;">
+                        <span class="iconify" data-icon="ion:heart-sharp" data-inline="false" {% if user in post.user_like.all %} style="color: red ;" {% else %} style="color: #cebdbd;" {% endif %} data-width="32" data-height="32"></span>
+                    </a>
+                    {% endif %}
+
+                </h2>
+                
+                <p class="article-content">{{ post.content }}</p>
+                <!--<div style="width: 100%; height:250px; background-color:#ff0000;"></div> -->
+                {% if post.image %}
+                <div class="text-center mb-1">
+                <img src="{{post.image.url}}" style="width:auto;height:auto;max-width:100%;max-height:100%;">
+                </div>
+                {% endif %}
+            </div>
+        </article>
+    {% endfor %}
+
+    {% if is_paginated %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <nav aria-label="page navigation">
+                <ul class="pagination">
+    
+                    <!-- Go page 1 with << -->
+                    <li class="page-item">
+                        <a href="{{request.path}}?page=1" class="page-link"><span>&laquo;</span></a>
+                    </li>
+    
+                    <!-- Go 1 page previous with < -->
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ page_obj.previous_page_number }}"
+                            class="page-link"><span>&lt;</span></a>
+                    </li>
+                    {% endif %}
+    
+                    <!-- Go 2 page previous with ... -->
+                    {% if page_obj.number|add:'-2' > 1 %}
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ page_obj.number|add:'-3' }}"
+                            class="page-link"><span>&hellip;</span></a>
+                    </li>
+                    {% endif %}
+    
+                    <!-- Display 3 page previous and 3 page next -->
+                    {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                    <li class="page-item disabled">
+                        <a href="#" class="page-link">{{i}}</a>
+                    </li>
+                    {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ i }}" class="page-link">{{ i }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+    
+                    <!-- Go 2 page next with ... -->
+                    {% if page_obj.paginator.num_pages > page_obj.number|add:'2' %}
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ page_obj.number|add:'3' }}"
+                            class="page-link"><span>&hellip;</span></a>
+                    </li>
+                    {% endif %}
+    
+                    <!-- Go 1 page next with > -->
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ page_obj.next_page_number }}"
+                            class=" page-link"><span>&gt;</span></a>
+                    </li>
+                    {% endif %}
+    
+                    <!-- Go last page with >> -->
+                    <li class="page-item">
+                        <a href="{{request.path}}?page={{ paginator.num_pages }}" class="page-link"><span>&raquo;</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+
+<script>
+
+</script>
+    
+{% endblock content%}
