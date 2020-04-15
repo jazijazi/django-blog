@@ -18,8 +18,8 @@
                 <a class="btn btn-sm mt-1 mb-1 float-right" href="{% url 'post-delete' object.id %}"><span class="iconify"
                     data-icon="ant-design:delete-fill" style="color: red;" data-width="20px"></span></a>
             {% endif %}
-
-            <!-- like --> 
+            
+            <!-- like -->
             {% if user.is_authenticated and user != post.author %}
             <a class="likebtn btn float-right" pk="{{post.id}}" style="background-color: transparent;">
                 <span class="iconify" data-icon="ion:heart-sharp" data-inline="false" {% if user in post.user_like.all %} style="color: red ;" {% else %} style="color: #cebdbd;" {% endif %} data-width="32" data-height="32"></span>
