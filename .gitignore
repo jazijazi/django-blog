@@ -6,7 +6,7 @@ __pycache__
 db.sqlite3
 
 media/
-!media/default.jpg 
+!media/post_images/ 
 
 # Backup files # 
 *.bak 
