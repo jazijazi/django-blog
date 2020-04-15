@@ -22,11 +22,12 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args , **kwargs)
 
-        img = PilImage.open(self.image.path)
+        if self.image : #beecause image maybe null
+            img = PilImage.open(self.image.path)
         
-        if img.height > 500 or img.width > 700 :
-            output_size = (700,500)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
+            if img.height > 500 or img.width > 700 :
+                output_size = (700,500)
+                img.thumbnail(output_size)
+                img.save(self.image.path)
     
     
