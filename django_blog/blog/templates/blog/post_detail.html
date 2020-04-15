@@ -1,0 +1,38 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content %}
+<script src="{% static 'blog/js/like.js' %}"></script>
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+            <small class="text-muted">{{ object.date_posted | date:"l , d F Y" }}</small>
+            <small class="time-post">{{ object.date_posted | date:"G:i" }}</small>
+        </div>
+        <h2 class="article-title">{{ object.title }}
+            <!-- edit delete -->
+            {% if object.author == user %}
+                <a class="btn btn-sm mt-10 mb-1 float-right" href="{% url 'post-update' object.id %}"><span class="iconify"
+                    data-icon="bx:bx-edit" data-inline="false" data-width="20px"></span></a>
+                <a class="btn btn-sm mt-1 mb-1 float-right" href="{% url 'post-delete' object.id %}"><span class="iconify"
+                    data-icon="ant-design:delete-fill" style="color: red;" data-width="20px"></span></a>
+            {% endif %}
+
+            <!-- like --> 
+            {% if user.is_authenticated and user != post.author %}
+            <a class="likebtn btn float-right" pk="{{post.id}}" style="background-color: transparent;">
+                <span class="iconify" data-icon="ion:heart-sharp" data-inline="false" {% if user in post.user_like.all %} style="color: red ;" {% else %} style="color: #cebdbd;" {% endif %} data-width="32" data-height="32"></span>
+            </a>
+            {% endif %}
+        </h2>
+        <p class="article-content">{{ object.content }}</p>
+        
+        {% if post.image %}
+        <div class="text-center mb-1">
+            <img src="{{post.image.url}}" style="width:auto;height:auto;max-width:100%;max-height:100%;">
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock content%}
