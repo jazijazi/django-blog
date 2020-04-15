@@ -16,7 +16,7 @@
                     <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
                     
                     <!--Like-->
-                    {% if user != post.author %}
+                    {% if user.is_authenticated and user != post.author %}
                     <a class="likebtn btn float-right" pk="{{post.id}}" style="background-color: transparent;">
                         <span class="iconify" data-icon="ion:heart-sharp" data-inline="false" {% if user in post.user_like.all %} style="color: red ;" {% else %} style="color: #cebdbd;" {% endif %} data-width="32" data-height="32"></span>
                     </a>
