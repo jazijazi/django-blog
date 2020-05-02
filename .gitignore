@@ -8,7 +8,11 @@ db.sqlite3
 #media/ and !media/default.jpg NoTT working
 post_images/ 
 progile_pics/
-!media/post_images/ 
+!media/post_images/
+#ckeditor
+ckeditor_uploads/ 
+#static file
+collectstatic/
 
 # Backup files # 
 *.bak 

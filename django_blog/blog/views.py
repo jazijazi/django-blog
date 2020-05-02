@@ -76,7 +76,7 @@ class PostCreateView(LoginRequiredMixin , CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin , UpdateView):
     model = Post
-    fields = ['title','content','image']
+    fields = ['title','content']
     #default template is <model>_form because is shared with createView
     
     #for set author field with current login user

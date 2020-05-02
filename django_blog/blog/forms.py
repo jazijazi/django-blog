@@ -4,6 +4,6 @@ from .models import Post
 class PostView(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title','content','image']
+        fields = ['title','content']
 
-        widgets = {'image': forms.FileInput(attrs={'id': 'postimageform'}) }
+        #widgets = {'image': forms.FileInput(attrs={'id': 'postimageform'}) }
