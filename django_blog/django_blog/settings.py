@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from decouple import config 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -158,10 +159,11 @@ LOGIN_REDIRECT_URL = 'blog-home' #when login is done then go here
 LOGIN_URL = 'login' #login page is here
 
 
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #for send email with django
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'jazi1374@gmail.com'
-EMAIL_HOST_PASSWORD = 'Jazi0018394' 
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD =  config('EMAIL_HOST_PASSWORD')

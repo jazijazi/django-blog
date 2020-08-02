@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from .models import Post
 from users.models import Profile
 
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+
 from .forms import PostView
 
 # Create your views here.
@@ -70,9 +74,25 @@ class PostCreateView(LoginRequiredMixin , CreateView):
     form_class = PostView
     #for set author field with current login user
     def form_valid(self , form):
+        create_post_email(self.request.user , form.instance.title)
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+#send a email when user create a new post
+def create_post_email(user , title):
+    if user.email :
+        subject = 'You Create a POST !'
+        from_email ='mydjangoapp@gmail.com'
+        to = user.email
+        context = {'user': user.email,'post_name': title}
+        html_content = render_to_string('blog/create_post_email.html', context)
+        plain_message = strip_tags(html_content)
+        try:
+            send_mail(subject , plain_message , from_email , [to] , fail_silently=False , html_message=html_content)
+        except Exception as e:
+            print("\n****Error in sending email for create a post****\n")
+            print(e)
+            print("\n****Error in sending email for create a post****\n")
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin , UpdateView):
     model = Post
