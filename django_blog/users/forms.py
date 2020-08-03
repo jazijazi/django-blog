@@ -2,6 +2,16 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
+from django.contrib.auth.forms import PasswordChangeForm
+
+class PasswordChangeForm1(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['new_password2'].help_text += '<ul>'
+        self.fields['new_password2'].help_text += '<li>repeate new password</li>'
+        self.fields['new_password2'].help_text += '</ul>'
+
+    field_order = ['new_password1', 'new_password2', 'old_password']
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()

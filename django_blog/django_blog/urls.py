@@ -35,6 +35,11 @@ urlpatterns = [
     
     path('ckdeditor/', include('ckeditor_uploader.urls')),
     
+    path('password_change/' , user_views.PasswordChange.as_view(
+        template_name='users/password_change_form.html') , name='passwordchange'),
+    path('password_change/done/' , auth_views.PasswordChangeDoneView.as_view(
+        template_name='users/password_change_done.html') , name='passwordchangedone'),
+
     path('password-reset/', auth_views.PasswordResetView.as_view(
             template_name='users/password_reset.html' , email_template_name='users/password_reset_email.html'), name='password_reset'),
 

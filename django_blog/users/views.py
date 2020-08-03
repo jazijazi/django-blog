@@ -1,10 +1,11 @@
 from django.shortcuts import render , redirect
 #from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .forms import UserRegisterForm , UserUpdateForm , ProfileUpdateForm
+from .forms import UserRegisterForm , UserUpdateForm , ProfileUpdateForm , PasswordChangeForm1
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
-
+from django.contrib.auth.views import PasswordChangeView 
+from django.urls import reverse_lazy
 
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
@@ -56,6 +57,10 @@ def activate(request, uidb64, token):
         #return HttpResponse('Activation link is invalid!')
         messages.error(request , f'Activation link is invalid!')
         return redirect('login') 
+
+class PasswordChange(PasswordChangeView):
+    form_class = PasswordChangeForm1
+    success_url = reverse_lazy("passwordchangedone")
 
 '''
 def register(request):
