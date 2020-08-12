@@ -26,7 +26,7 @@ SECRET_KEY = 'yu3wdfz9=1jisncfdgmfj9lxcpqy+w$(r1)_zur+-b*kub+rja'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.108','localhost']
 
 
 # Application definition
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ckeditor' ,
-    'ckeditor_uploader' , 
+    'ckeditor_uploader' ,
+    'rest_framework',
 ]
 
 CKEDITOR_UPLOAD_PATH = "ckeditor_uploads/"
@@ -74,6 +75,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        #'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ]
+}
 
 ROOT_URLCONF = 'django_blog.urls'
 

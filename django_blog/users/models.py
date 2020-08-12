@@ -5,7 +5,7 @@ import os
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User , on_delete=models.CASCADE)
+    user = models.OneToOneField(User , on_delete=models.CASCADE , related_name="profile")
     image = models.ImageField(null=True , blank = True ,default='default.jpg', upload_to='progile_pics')
     bio = models.TextField(null=True , blank = True , max_length=500)
     location = models.CharField(null=True , blank = True , max_length=100)
