@@ -5,7 +5,7 @@ from django.views.generic import ListView , DetailView ,CreateView , UpdateView 
 from django.contrib.auth.models import User
 from .models import Post
 from users.models import Profile
-
+from django.db.models import Q
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
@@ -26,7 +26,15 @@ class PostListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
-    paginate_by = 6
+    paginate_by = 1
+    
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("q"):
+            search_word =  request.GET.get("q")
+            self.queryset = Post.objects.filter(Q(title__icontains = search_word) |
+                        Q(content__icontains = search_word) ).distinct()
+
+        return super(PostListView, self).get(request, *args, **kwargs)
 
 def like_post(request):
     user = request.user

@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ckeditor' ,
-    'ckeditor_uploader' ,
+    'ckeditor_uploader',
     'rest_framework',
 ]
 
@@ -174,3 +174,37 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD =  config('EMAIL_HOST_PASSWORD')
+
+
+#Logging Config
+'''
+LOGGING = {
+    'version':1 ,
+    'loggers':{
+        'django':{
+            'handlers':['mainhandler','infohandler'],
+            'level':'DEBUG'
+        }
+    },
+    'handlers':{
+        'mainhandler':{
+            'level':'DEBUG',
+            'class':'logging.FileHandler',
+            'filename':'./logs/debug.log',
+            'formatter':'simple' 
+        },
+        'infohandler':{
+            'level':'INFO',
+            'class':'logging.FileHandler',
+            'filename':'./logs/info.log',
+            'formatter':'simple' 
+        }
+    },
+    'formatters':{
+        'simple':{
+            'format':'{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style':'{'
+        }
+    }
+}
+'''
