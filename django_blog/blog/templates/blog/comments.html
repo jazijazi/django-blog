@@ -1,0 +1,154 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+<article class="content-section">
+    <h5>Add Your Comment</h5>
+    <form method="POST" enctype="multipart/form-data"> <!--form for comment-->
+        {% csrf_token %}
+        <fieldset class="form-group">
+            {{comment_form|crispy}}
+        </fieldset>
+        <fieldset class="form-group">
+            <button class="btn btn-success btn-block" type="submit" name="submit_comment">Post</button>
+        </fieldset>
+    </form>
+</article>
+{% endif %}
+
+<article class="content-section">
+    <h5 class="mb-3">Comments</h5>
+    {% if object.comments.count != 0 %} <!--if post has comment-->
+        {% for comment in object.comments.all %}
+            <article class="content-section bg-light">
+                
+                {% if user.is_authenticated %} <!--Only whene user authenticated can see reply btn-->
+                <button class="btn btn-sm btn-secondary reply_btn float-right" commentid="{{comment.id}}">reply</button>
+                {% endif %}
+                
+                <div class="float-right mx-3"><!--like or delete comments-->
+                    {% if comment.writer == user %} <!--if user write this comment can delete it-->
+                    <button pk={{comment.pk}} class="del-comment btn btn-light py-0"><span class="iconify" data-icon="fa-regular:trash-alt" data-inline="false" style="color: red;"></span></button>
+                    {% else %} <!--if user NOT write this comment can like or dislike it-->
+                    <button pk={{comment.pk}} class="like btn btn-light py-0"><span like-icon-pk={{comment.pk}} class="iconify" data-icon="fa-solid:thumbs-up" data-inline="true" {% if user in comment.comment_like.all %} style="color: green;" {% endif %}></span></button>
+                    <span liked-pk={{comment.pk}}>{{comment.comment_like.count}}</span>
+                    <button pk={{comment.pk}} class="dislike btn btn-light py-0"><span dislike-icon-pk={{comment.pk}} class="iconify" data-icon="fa-solid:thumbs-down" data-inline="true" {% if user in comment.comment_dislike.all %} style="color: red;" {% endif %}></span></button>
+                    <span disliked-pk={{comment.pk}}>{{comment.comment_dislike.count}}</span>
+                    {% endif %}
+                </div>
+
+                {% if not comment.parent %} <!--comment is not a reply-->
+                    <p><strong>{{comment.writer.username}} :</strong> {{comment.body}}</p>
+                {% else %} <!--comment is a reply -->
+                    <p><small>in reply to {{comment.parent.body|truncatechars:15}} by <strong>{{comment.parent.writer.username}}</strong> </small></p>
+                    <p><strong>{{comment.writer.username}} :</strong> {{comment.body}}</p> 
+                {% endif %}
+
+                {% if user.is_authenticated %} <!--Only whene user authenticated can see reply form-->
+                <div class="d-none reply_form" commentid="{{comment.id}}"> <!--form for reply-->
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            {{comment_form|crispy}}
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <input type="hidden" name="parent_id" value="{{comment.id}}">
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <button class="btn btn-info btn-block" type="submit" name="submit_reply">Reply</button>
+                        </fieldset>
+                    </form>
+                </div>
+                {% endif %}
+                <!--
+                <div class="bg-white p-3 border border-dark"> display all reply
+                {% for reply in comment.replies.all %}
+                    <p><strong>reply by {{reply.writer.username}} :</strong> {{reply.body}}</p>
+                {% endfor %}
+                </div> -->
+            </article>
+        {% endfor %}
+    {% else %} <!--if post has`nt any comment-->
+        <p>No Comment on this post</p>
+    {% endif %}
+</article>
+
+<script>
+    //get all reply btns & all reply forms
+    replybtns = document.querySelectorAll('.reply_btn');
+    replyforms = document.querySelectorAll('.reply_form');
+    //when click on reply btn open exact reply form ==> find match commentid attribute in two
+    replybtns.forEach((replybtn)=>{
+        replybtn.addEventListener('click' , function(){
+            replyforms.forEach((replyform)=>{
+                if(replyform.getAttribute('commentid') === replybtn.getAttribute('commentid')){
+                    replyform.classList.toggle("d-block");
+                }
+            })
+        })
+    });
+</script>
+
+<script>
+    likebtns = document.querySelectorAll('button.like');
+
+    likebtns.forEach((likebtn)=>{
+        likebtn.addEventListener('click' , function(){
+            pk = this.getAttribute('pk');
+            likespan = document.querySelector(`span[liked-pk="${pk}"]`);
+            dislikespan = document.querySelector(`span[disliked-pk="${pk}"]`);
+
+            fetch("{% url 'like_dislike_comments' %}", {
+                credentials: 'include',
+                method: 'POST',
+                mode:'cors',
+                headers: {
+                  'Accept': 'application/json, text/plain',
+                  'Content-Type': 'application/x-www-form-urlencoded' , 
+                  'X-Requested-With': 'XMLHttpRequest' ,
+                  "X-CSRFToken": '{{csrf_token}}' 
+                },
+                body:`pk=${pk}&like=${1}`
+            }).then(res=>res.json())
+                //.then(res => console.log(res))
+            .then((res) => {
+                console.log(res.status);
+                likespan.textContent = res.liked ;
+                dislikespan.textContent = res.disliked ;
+            });
+
+        });
+    })
+</script>
+
+<script>
+    dislikebtns = document.querySelectorAll('button.dislike');
+
+    dislikebtns.forEach((dislikebtn)=>{
+        dislikebtn.addEventListener('click' , function(){
+            pk = this.getAttribute('pk');
+            likespan = document.querySelector(`span[liked-pk="${pk}"]`);
+            dislikespan = document.querySelector(`span[disliked-pk="${pk}"]`);
+
+            fetch("{% url 'like_dislike_comments' %}", {
+                credentials: 'include',
+                method: 'POST',
+                mode:'cors',
+                headers: {
+                  'Accept': 'application/json, text/plain',
+                  'Content-Type': 'application/x-www-form-urlencoded' , 
+                  'X-Requested-With': 'XMLHttpRequest' ,
+                  "X-CSRFToken": '{{csrf_token}}' 
+                },
+                body:`pk=${pk}&dislike=${1}`
+            }).then(res=>res.json())
+                //.then(res => console.log(res))
+            .then((res) => {
+                console.log(res.status);
+                likespan.textContent = res.liked ;
+                dislikespan.textContent = res.disliked ;
+            });
+
+        });
+    })
+</script>

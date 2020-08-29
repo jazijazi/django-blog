@@ -1,6 +1,8 @@
 from django.urls import path, re_path , include
 from rest_framework import routers
-from . import views 
+from . import views
+
+app_name='api'
 
 router = routers.DefaultRouter()
 router.register('posts' , views.PostView)

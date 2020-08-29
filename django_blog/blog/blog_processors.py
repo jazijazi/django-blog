@@ -10,5 +10,5 @@ def user(request): #add to setting
     return{'g_profile':profile}
 
 def last_posts(request):
-    post = Post.objects.all().order_by('date_posted')[:5]
+    post = Post.objects.all().order_by('-date_posted')[:5]
     return {'g_last_posts':post}

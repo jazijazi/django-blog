@@ -37,3 +37,17 @@ class Post(models.Model):
                 img.save(self.image.path)
     """
     
+class Comment(models.Model):
+    writer = models.ForeignKey(User , on_delete=models.CASCADE , related_name='commentor')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE , related_name='comments')
+    body = models.TextField(max_length=200, help_text="Add your comment")
+    created = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE , null=True, blank=True, related_name='replies')
+    comment_like=models.ManyToManyField(User,related_name="user_comment_likes",blank=True)
+    comment_dislike=models.ManyToManyField(User,related_name="user_comment_dislikes",blank=True)
+
+    class Meta:
+        ordering = ('-created',)
+
+    def __str__(self):
+        return 'Comment by {}'.format(self.writer.username)
